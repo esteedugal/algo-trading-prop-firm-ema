@@ -64,7 +64,16 @@ TARGET_LOOKBACK_BARS = 60                # TARGET reference -- deliberately NOT 
                                           # an implausible 68.9% win rate / 2,476 trades in 20 days)
 MIN_TARGET_RISK_REWARD = 1.5             # skip a setup if target distance < this x the stop distance --
                                           # safety net in case even the wider lookback still lands close
-STOP_BUFFER_PCT = 0.0005                 # push stop just beyond the level, not exactly on it
+STOP_BUFFER_PCT = 0.0050                 # push stop meaningfully beyond the level, not just past it --
+                                          # widened from 0.0005 on 2026-07-16 after a live replay of the
+                                          # first 2 trading days' 27 stopped-out trades against real 1-min
+                                          # bars showed the old buffer was getting clipped by ordinary
+                                          # intraday noise (avg stop distance was 0.235% of entry price):
+                                          # 0% win rate / -$1,034 at 0.05%, vs 37% win rate / -$434 at 0.50%
+                                          # (position-sized to hold $ risk per trade constant in both cases).
+                                          # Reward:risk gate (MIN_TARGET_RISK_REWARD) interaction with the
+                                          # wider stop was not re-tested -- watch for a drop in trade
+                                          # frequency if the wider stop now disqualifies more setups.
 
 # Operational cap only (NOT a risk control -- pre_trade_check's own
 # budget/volume/buying-power gating already bounds real exposure) --
